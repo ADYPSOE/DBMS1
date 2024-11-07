@@ -1,0 +1,79 @@
+CREATE TABLE Student (
+    StudID INT,
+    Name VARCHAR(50),
+    Address VARCHAR(100),
+    Marks INT
+);
+
+CREATE TABLE Employee (
+    EmployeeID INT,
+    Name VARCHAR(50),
+    Address VARCHAR(100),
+    Salary DECIMAL(10, 2),
+    DateOfJoining DATE,
+    Department VARCHAR(50)
+);
+
+CREATE TABLE Weather (
+    CityID INT,
+    CityName VARCHAR(50),
+    MinTemp DECIMAL(4, 1),
+    MaxTemp DECIMAL(4, 1)
+);
+
+INSERT INTO Student (StudID, Name, Address, Marks) VALUES (1, 'Alice', '123 Main St', 85);
+INSERT INTO Student (StudID, Name, Address, Marks) VALUES (2, 'Bob', '456 Maple Ave', 92);
+
+INSERT INTO Employee (EmployeeID, Name, Address, Salary, DateOfJoining, Department) VALUES (1, 'John Doe', '789 Elm St', 55000.00, '2023-01-15', 'HR');
+
+INSERT INTO Weather (CityID, CityName, MinTemp, MaxTemp) VALUES (1, 'New York', -3.5, 10.2);
+
+ALTER TABLE Student 
+MODIFY StudID INT NOT NULL,
+MODIFY Name VARCHAR(50) NOT NULL,
+MODIFY Address VARCHAR(100) NOT NULL,
+MODIFY Marks INT NOT NULL;
+
+ALTER TABLE Employee 
+MODIFY EmployeeID INT NOT NULL,
+MODIFY Name VARCHAR(50) NOT NULL,
+MODIFY Address VARCHAR(100) NOT NULL,
+MODIFY Salary DECIMAL(10, 2) NOT NULL,
+MODIFY DateOfJoining DATE NOT NULL,
+MODIFY Department VARCHAR(50) NOT NULL;
+
+ALTER TABLE Student ADD PRIMARY KEY (StudID);
+
+CREATE VIEW JoiningInfo AS
+SELECT EmployeeID, Name, DateOfJoining
+FROM Employee;
+
+CREATE INDEX idx_student_studid ON Student (StudID);
+CREATE INDEX idx_employee_employeeid ON Employee (EmployeeID);
+CREATE INDEX idx_weather_cityid ON Weather (CityID);
+
+
+CREATE VIEW MarksInfo AS
+SELECT StudID, Marks
+FROM Student;
+
+
+ALTER TABLE Weather RENAME TO WeatherData;
+
+ALTER TABLE WeatherData
+DROP COLUMN CityName;
+
+
+ALTER TABLE Student ADD Grade VARCHAR(10);
+
+
+CREATE VIEW DistinctionStudents AS
+SELECT * FROM Student
+WHERE Grade = 'Distinction';
+
+CREATE SEQUENCE studid_seq
+START WITH 1
+INCREMENT BY 1
+MINVALUE 1;
+
+CREATE SYNONYM Emp_Info FOR Employee;

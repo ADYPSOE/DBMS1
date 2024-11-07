@@ -1,0 +1,102 @@
+CREATE TABLE Student1 (
+    Student_Id INT,
+    Student_Name VARCHAR(100),
+    Instructor_Id INT,
+    Student_City VARCHAR(100)
+);
+
+CREATE TABLE Instructor (
+    Instructor_Id INT,
+    Instructor_Name VARCHAR(100),
+    Instructor_City VARCHAR(100),
+    Specialization VARCHAR(100)
+);
+
+INSERT INTO Instructor (Instructor_Id, Instructor_Name, Instructor_City, Specialization) 
+VALUES (1, 'Dr. John Doe', 'Pune', 'Computer Science');
+
+INSERT INTO Instructor (Instructor_Id, Instructor_Name, Instructor_City, Specialization) 
+VALUES (2, 'Dr. Jane Smith', 'Mumbai', 'Mechanical Engineering');
+
+INSERT INTO Instructor (Instructor_Id, Instructor_Name, Instructor_City, Specialization) 
+VALUES (3, 'Dr. Emily Brown', 'Pune', 'Electrical Engineering');
+
+INSERT INTO Student (Student_Id, Student_Name, Instructor_Id, Student_City) 
+VALUES (1, 'Alice', 1, 'Pune');
+
+INSERT INTO Student (Student_Id, Student_Name, Instructor_Id, Student_City) 
+VALUES (2, 'Bob', 2, 'Mumbai');
+
+INSERT INTO Student (Student_Id, Student_Name, Instructor_Id, Student_City) 
+VALUES (3, 'Charlie', NULL, 'Pune');
+
+INSERT INTO Student (Student_Id, Student_Name, Instructor_Id, Student_City) 
+VALUES (4, 'David', 3, 'Chennai');
+
+COMMIT;
+
+
+SELECT 
+    s.Student_Name, 
+    i.Instructor_Name
+FROM 
+    Student s
+JOIN 
+    Instructor i
+ON 
+    s.Instructor_Id = i.Instructor_Id;
+
+
+SELECT 
+    Student_Name
+FROM 
+    Student
+WHERE 
+    Instructor_Id IS NULL;
+
+
+SELECT 
+    Student_Name AS Name, 
+    'Student' AS Type
+FROM 
+    Student
+WHERE 
+    Instructor_Id IS NULL
+
+UNION ALL
+
+
+SELECT 
+    Instructor_Name AS Name, 
+    'Instructor' AS Type
+FROM 
+    Instructor
+WHERE 
+    Instructor_Id NOT IN (SELECT DISTINCT Instructor_Id FROM Student);
+SELECT 
+    s.Student_Name
+FROM 
+    Student s
+JOIN 
+    Instructor i
+ON 
+    s.Instructor_Id = i.Instructor_Id
+WHERE 
+    i.Specialization = 'Computer Science';
+
+
+CREATE VIEW PuneInstructorStudents AS
+SELECT 
+    COUNT(s.Student_Id) AS Total_Students
+FROM 
+    Student s
+JOIN 
+    Instructor i
+ON 
+    s.Instructor_Id = i.Instructor_Id
+WHERE 
+    i.Instructor_City = 'Pune';
+
+
+SELECT * FROM PuneInstructorStudents;
+

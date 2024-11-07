@@ -1,0 +1,71 @@
+CREATE TABLE Locations (
+    location_id INT PRIMARY KEY,
+    street_address VARCHAR(255),
+    postal_code VARCHAR(20),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    country_id VARCHAR(3)
+);
+
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(100),
+    manager_id INT,
+    location_id INT,
+    FOREIGN KEY (location_id) REFERENCES Locations(location_id)
+);
+
+CREATE TABLE Employee (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    hire_date DATE,
+    salary DECIMAL(10, 2),
+    job_title VARCHAR(100),
+    manager_id INT,
+    department_id INT,
+    FOREIGN KEY (manager_id) REFERENCES Employee(employee_id),
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+INSERT INTO Locations (location_id, street_address, postal_code, city, state, country_id) VALUES
+(1, 'GM ROAD', '423107', 'New York', 'NY', 'USA'),
+(2, 'FC ROAD', '411047', 'San Francisco', 'CA', 'USA'),
+(3, 'COLLEGE ROAD', '423109', 'Toronto', 'ON', 'CAN');
+
+INSERT INTO Departments (department_id, department_name, manager_id, location_id) VALUES
+(1, 'IT', 101, 1),
+(2, 'Finance', 102, 2),
+(3, 'HR', 103, 3);
+
+INSERT INTO Employee (employee_id, first_name, last_name, hire_date, salary, job_title, manager_id, department_id) VALUES
+(101, 'John', 'Doe', '2020-01-15', 1200.00, 'Manager', NULL, 1),
+(102, 'Jane', 'Smith', '2019-03-25', 1100.00, 'Manager', NULL, 2),
+(103, 'Emily', 'Johnson', '2021-06-20', 1000.00, 'Manager', NULL, 3),
+(104, 'Abhi', 'Singh', '2020-05-01', 950.00, 'Engineer', 101, 1);
+
+
+SELECT first_name, last_name, salary
+FROM Employee
+WHERE salary > (SELECT salary FROM Employee WHERE last_name = 'Singh');
+
+SELECT e.first_name, e.last_name
+FROM Employee e
+JOIN Departments d ON e.department_id = d.department_id
+JOIN Locations l ON d.location_id = l.location_id
+WHERE e.manager_id IS NOT NULL AND l.country_id = 'USA';
+
+SELECT e.first_name, e.last_name
+FROM Employee e
+JOIN Departments d ON e.department_id = d.department_id
+WHERE d.department_name = 'IT';
+
+SELECT first_name, last_name, salary
+FROM Employee
+WHERE salary > (SELECT AVG(salary) FROM Employee);
+
+SELECT e.first_name, e.last_name, e.salary
+FROM Employee e
+JOIN Departments d ON e.department_id = d.department_id
+WHERE e.salary > (SELECT AVG(salary) FROM Employee)
+  AND d.department_name = 'IT';

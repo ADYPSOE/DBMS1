@@ -1,0 +1,54 @@
+CREATE TABLE employee (employee_name VARCHAR(100), street VARCHAR(100), city VARCHAR(50));
+
+CREATE TABLE works (employee_name VARCHAR(100), company_name VARCHAR(100), salary DECIMAL(10, 2));
+
+CREATE TABLE company (company_name VARCHAR(100), city VARCHAR(50));
+
+CREATE TABLE manages (employee_name VARCHAR(100), manager_name VARCHAR(100));
+
+INSERT INTO employee VALUES ('Swapnil', 'GM Road', 'New York');
+INSERT INTO employee VALUES ('Sam', 'Laxmi Road', 'Los Angeles');
+INSERT INTO employee VALUES ('Onkar', 'AB Road', 'Chicago');
+INSERT INTO employee VALUES ('Carry', 'College Road', 'San Francisco');
+
+INSERT INTO works VALUES ('Swapnil', 'First Bank Corporation', 12000);
+INSERT INTO works VALUES ('Sam', 'First Bank Corporation', 8000);
+INSERT INTO works VALUES ('Onkar', 'Small Bank Corporation', 6000);
+INSERT INTO works VALUES ('Carry', 'Tech Innovations Inc.', 15000);
+
+INSERT INTO company VALUES ('First Bank Corporation', 'New York');
+INSERT INTO company VALUES ('Small Bank Corporation', 'Chicago');
+INSERT INTO company VALUES ('Tech Innovations Inc.', 'San Francisco');
+
+INSERT INTO manages VALUES ('Swapnil', 'Carry');
+INSERT INTO manages VALUES ('Onkar', 'Swapnil');
+INSERT INTO manages VALUES ('Sam', 'Carry');
+
+SELECT employee_name
+FROM works
+WHERE company_name = 'First Bank Corporation';
+
+SELECT e.employee_name, e.street, e.city
+FROM employee e
+JOIN works w ON e.employee_name = w.employee_name
+WHERE w.company_name = 'First Bank Corporation' AND w.salary > 10000;
+
+SELECT e.employee_name
+FROM employee e
+JOIN manages m ON e.employee_name = m.employee_name
+JOIN employee manager ON m.manager_name = manager.employee_name
+WHERE e.street = manager.street AND e.city = manager.city;
+
+SELECT e.employee_name
+FROM works e
+WHERE e.salary > ALL (SELECT w.salary FROM works w WHERE w.company_name = 'Small Bank Corporation');
+
+SELECT e.employee_name
+FROM works e
+WHERE e.salary > (SELECT AVG(w.salary) FROM works w WHERE w.company_name = e.company_name);
+
+SELECT company_name
+FROM works
+GROUP BY company_name
+ORDER BY SUM(salary) ASC
+LIMIT 1;
